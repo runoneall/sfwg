@@ -38,6 +38,16 @@ var isShowStatus = parser.Flag("", "status", &argparse.Options{
 	Help:     "查看 wireguard 状态",
 })
 
+var isWGDown = parser.Flag("", "down", &argparse.Options{
+	Required: false,
+	Help:     "关闭 wireguard 连接",
+})
+
+var isWGUp = parser.Flag("", "up", &argparse.Options{
+	Required: false,
+	Help:     "开启 wireguard 连接",
+})
+
 func doParse() {
 	parser.DisableHelp()
 	if err := parser.Parse(os.Args); err != nil {
@@ -58,5 +68,13 @@ func doParse() {
 
 	if *isShowStatus {
 		doShowStatus()
+	}
+
+	if *isWGDown {
+		doWGDown()
+	}
+
+	if *isWGUp {
+		doWGUp(*configFile)
 	}
 }
