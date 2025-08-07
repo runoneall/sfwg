@@ -81,14 +81,15 @@ func doWGUp(fn string) {
 
 	profileAddress := strings.Split(interfaceSec.Key("Address").String(), ", ")
 
+	doWGDown()
 	output, err := exec.Command(
 		"curl", "sf/wg/up",
-		"-d", fmt.Sprintf("endpoint=%s", peerSec.Key("Endpoint").String()),
-		"-d", fmt.Sprintf("PublicKey=%s", peerSec.Key("PublicKey").String()),
-		"-d", fmt.Sprintf("PrivateKey=%s", interfaceSec.Key("PrivateKey").String()),
-		"-d", fmt.Sprintf("Address=%s", profileAddress[0]),
-		"-d", fmt.Sprintf("Addres6=%s", profileAddress[1]),
-		"-d", "name=sfwg-auto-up",
+		"-d", fmt.Sprintf("'endpoint=%s'", peerSec.Key("Endpoint").String()),
+		"-d", fmt.Sprintf("'PublicKey=%s'", peerSec.Key("PublicKey").String()),
+		"-d", fmt.Sprintf("'PrivateKey=%s'", interfaceSec.Key("PrivateKey").String()),
+		"-d", fmt.Sprintf("'Address=%s'", profileAddress[0]),
+		"-d", fmt.Sprintf("'Addres6=%s'", profileAddress[1]),
+		"-d", "'name=sfwg-auto-up'",
 	).Output()
 
 	if err != nil {
