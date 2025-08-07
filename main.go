@@ -89,7 +89,6 @@ func doWGUp(fn string) {
 		"-d", fmt.Sprintf("'PrivateKey=%s'", interfaceSec.Key("PrivateKey").String()),
 		"-d", fmt.Sprintf("'Address=%s'", profileAddress[0]),
 		"-d", fmt.Sprintf("'Addres6=%s'", profileAddress[1]),
-		"-d", "name=sfwg-auto-up",
 	}
 	fmt.Println(command)
 	output, err := exec.Command(command[0], command[1:]...).Output()
