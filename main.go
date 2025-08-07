@@ -89,7 +89,7 @@ func doWGUp(fn string) {
 	}
 
 	doWGDown()
-	command := []string{
+	output, err := exec.Command(
 		"curl", "sf/wg/up",
 		"-d", fmt.Sprintf("endpoint=%s:%d", profileEndpoint.IP.String(), profileEndpoint.Port),
 		"-d", fmt.Sprintf("PublicKey=%s", peerSec.Key("PublicKey").String()),
@@ -97,9 +97,7 @@ func doWGUp(fn string) {
 		"-d", fmt.Sprintf("Address=%s", profileAddress[0]),
 		"-d", fmt.Sprintf("Addres6=%s", profileAddress[1]),
 		"-d", "name=sfwg",
-	}
-	fmt.Println(command)
-	output, err := exec.Command(command[0], command[1:]...).Output()
+	).Output()
 
 	if err != nil {
 		fmt.Println("启动 wireguard 失败", err)
