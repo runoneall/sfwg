@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net"
 	"os"
 	"os/exec"
 	"strings"
@@ -80,15 +81,22 @@ func doWGUp(fn string) {
 	peerSec := cfg.Section("Peer")
 
 	profileAddress := strings.Split(interfaceSec.Key("Address").String(), ", ")
+	profileEndpoint, err := net.ResolveTCPAddr("tcp", peerSec.Key("Endpoint").String())
+
+	if err != nil {
+		fmt.Println("解析 endpoint 失败", err)
+		return
+	}
 
 	doWGDown()
 	command := []string{
 		"curl", "sf/wg/up",
-		"-d", fmt.Sprintf("endpoint=%s", peerSec.Key("Endpoint").String()),
+		"-d", fmt.Sprintf("endpoint=%s:%d", profileEndpoint.IP.String(), profileEndpoint.Port),
 		"-d", fmt.Sprintf("PublicKey=%s", peerSec.Key("PublicKey").String()),
 		"-d", fmt.Sprintf("PrivateKey=%s", interfaceSec.Key("PrivateKey").String()),
 		"-d", fmt.Sprintf("Address=%s", profileAddress[0]),
 		"-d", fmt.Sprintf("Addres6=%s", profileAddress[1]),
+		"-d", "name=sfwg",
 	}
 	fmt.Println(command)
 	output, err := exec.Command(command[0], command[1:]...).Output()
