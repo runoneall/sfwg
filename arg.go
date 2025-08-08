@@ -33,19 +33,24 @@ var isWGHelp = parser.Flag("", "wg-help", &argparse.Options{
 	Help:     "查看 wireguard 命令的帮助信息",
 })
 
-var isShowStatus = parser.Flag("", "status", &argparse.Options{
+var isShowStatus = parser.Flag("s", "status", &argparse.Options{
 	Required: false,
 	Help:     "查看 wireguard 状态",
 })
 
-var isWGDown = parser.Flag("", "down", &argparse.Options{
+var isWGDown = parser.Flag("d", "down", &argparse.Options{
 	Required: false,
 	Help:     "关闭 wireguard 连接",
 })
 
-var isWGUp = parser.Flag("", "up", &argparse.Options{
+var isWGUp = parser.Flag("u", "up", &argparse.Options{
 	Required: false,
 	Help:     "开启 wireguard 连接",
+})
+
+var isGenWGCFProfile = parser.Flag("g", "gen", &argparse.Options{
+	Required: false,
+	Help:     "自动调用 wgcf 生成配置文件",
 })
 
 func doParse() {
@@ -76,5 +81,9 @@ func doParse() {
 
 	if *isWGUp {
 		doWGUp(*configFile)
+	}
+
+	if *isGenWGCFProfile {
+		doGenWGCFProfile()
 	}
 }

@@ -14,7 +14,7 @@ func main() {
 	doParse()
 }
 
-func isConfExist(fn string) bool {
+func isExist(fn string) bool {
 	if _, err := os.Stat(fn); os.IsNotExist(err) {
 		return false
 	}
@@ -22,7 +22,7 @@ func isConfExist(fn string) bool {
 }
 
 func doView(fn string) {
-	if !isConfExist(fn) {
+	if !isExist(fn) {
 		fmt.Println("配置文件不存在")
 		return
 	}
@@ -67,7 +67,7 @@ func doWGDown() {
 }
 
 func doWGUp(fn string) {
-	if !isConfExist(fn) {
+	if !isExist(fn) {
 		fmt.Println("配置文件不存在")
 	}
 
@@ -88,7 +88,6 @@ func doWGUp(fn string) {
 		return
 	}
 
-	doWGDown()
 	output, err := exec.Command(
 		"curl", "sf/wg/up",
 		"-d", fmt.Sprintf("endpoint=%s:%d", profileEndpoint.IP.String(), profileEndpoint.Port),
@@ -104,5 +103,26 @@ func doWGUp(fn string) {
 		return
 	}
 
+	fmt.Println(string(output))
+}
+
+func doGenWGCFProfile() {
+	if !isExist("wgcf") {
+		fmt.Println("找不到 wgcf 工具, 请置于当前目录下")
+		return
+	}
+
+	output, err := exec.Command("./wgcf", "register", "--accept-tos").Output()
+	if err != nil {
+		fmt.Println("注册失败", err)
+		return
+	}
+	fmt.Println(string(output))
+
+	output, err = exec.Command("./wgcf", "generate").Output()
+	if err != nil {
+		fmt.Println("生成配置文件失败", err)
+		return
+	}
 	fmt.Println(string(output))
 }
