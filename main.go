@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"os/exec"
 	"strings"
 
 	"gopkg.in/ini.v1"
@@ -37,33 +36,15 @@ func doView(fn string) {
 }
 
 func doWGHelp() {
-	output, err := exec.Command("curl", "sf/wg").Output()
-	if err != nil {
-		fmt.Println("获取帮助失败", err)
-		return
-	}
-
-	fmt.Println(string(output))
+	runCmd([]string{"curl", "sf/wg"})
 }
 
 func doShowStatus() {
-	output, err := exec.Command("curl", "sf/wg/show").Output()
-	if err != nil {
-		fmt.Println("获取状态失败", err)
-		return
-	}
-
-	fmt.Println(string(output))
+	runCmd([]string{"curl", "sf/wg/show"})
 }
 
 func doWGDown() {
-	output, err := exec.Command("curl", "sf/wg/down").Output()
-	if err != nil {
-		fmt.Println("关闭 wireguard 失败", err)
-		return
-	}
-
-	fmt.Println(string(output))
+	runCmd([]string{"curl", "sf/wg/down"})
 }
 
 func doWGUp(fn string) {
@@ -88,7 +69,7 @@ func doWGUp(fn string) {
 		return
 	}
 
-	output, err := exec.Command(
+	runCmd([]string{
 		"curl", "sf/wg/up",
 		"-d", fmt.Sprintf("endpoint=%s:%d", profileEndpoint.IP.String(), profileEndpoint.Port),
 		"-d", fmt.Sprintf("PublicKey=%s", peerSec.Key("PublicKey").String()),
@@ -96,14 +77,7 @@ func doWGUp(fn string) {
 		"-d", fmt.Sprintf("Address=%s", profileAddress[0]),
 		"-d", fmt.Sprintf("Addres6=%s", profileAddress[1]),
 		"-d", "name=sfwg",
-	).Output()
-
-	if err != nil {
-		fmt.Println("启动 wireguard 失败", err)
-		return
-	}
-
-	fmt.Println(string(output))
+	})
 }
 
 func doGenWGCFProfile() {
@@ -112,17 +86,6 @@ func doGenWGCFProfile() {
 		return
 	}
 
-	output, err := exec.Command("./wgcf", "register", "--accept-tos").Output()
-	if err != nil {
-		fmt.Println("注册失败", err)
-		return
-	}
-	fmt.Println(string(output))
-
-	output, err = exec.Command("./wgcf", "generate").Output()
-	if err != nil {
-		fmt.Println("生成配置文件失败", err)
-		return
-	}
-	fmt.Println(string(output))
+	runCmd([]string{"./wgcf", "register", "--accept-tos"})
+	runCmd([]string{"./wgcf", "generate"})
 }
