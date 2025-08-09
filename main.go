@@ -102,4 +102,5 @@ func doGenWGCFProfile() {
 func doAutoDownloadWGCF() {
 	url := "https://github.com/ViRb3/wgcf/releases/download/v2.2.27/wgcf_2.2.27_linux_amd64"
 	DownloadFromUrl(url, "wgcf")
+	runCmd([]string{"chmod", "+x", "wgcf"})
 }
