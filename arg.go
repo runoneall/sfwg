@@ -48,7 +48,7 @@ var isWGUp = parser.Flag("u", "up", &argparse.Options{
 	Help:     "开启 wireguard 连接",
 })
 
-var isGenWGCFProfile = parser.Flag("", "wgcf-g", &argparse.Options{
+var isGenWGCFProfile = parser.Flag("g", "wgcf-g", &argparse.Options{
 	Required: false,
 	Help:     "自动调用 wgcf",
 })
