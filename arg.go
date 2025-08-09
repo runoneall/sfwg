@@ -48,15 +48,26 @@ var isWGUp = parser.Flag("u", "up", &argparse.Options{
 	Help:     "开启 wireguard 连接",
 })
 
-var isGenWGCFProfile = parser.Flag("g", "gen", &argparse.Options{
+var isGenWGCFProfile = parser.Flag("", "wgcf-g", &argparse.Options{
 	Required: false,
-	Help:     "自动调用 wgcf 生成配置文件",
+	Help:     "自动调用 wgcf",
+})
+
+var isAutoDownloadWGCF = parser.Flag("", "wgcf-d", &argparse.Options{
+	Required: false,
+	Help:     "自动下载 wgcf",
 })
 
 func doParse() {
 	parser.DisableHelp()
+
 	if err := parser.Parse(os.Args); err != nil {
 		fmt.Println(parser.Usage(err))
+	}
+
+	if len(os.Args) == 1 {
+		fmt.Println(parser.Usage(nil))
+		return
 	}
 
 	if *isHelp {
@@ -85,5 +96,9 @@ func doParse() {
 
 	if *isGenWGCFProfile {
 		doGenWGCFProfile()
+	}
+
+	if *isAutoDownloadWGCF {
+		doAutoDownloadWGCF()
 	}
 }

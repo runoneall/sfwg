@@ -86,6 +86,20 @@ func doGenWGCFProfile() {
 		return
 	}
 
+	for _, oldfile := range []string{"wgcf-account.toml", "wgcf-profile.conf"} {
+		if isExist(oldfile) {
+			if err := os.RemoveAll(oldfile); err != nil {
+				fmt.Println("删除旧文件失败", err)
+				return
+			}
+		}
+	}
+
 	runCmd([]string{"./wgcf", "register", "--accept-tos"})
 	runCmd([]string{"./wgcf", "generate"})
+}
+
+func doAutoDownloadWGCF() {
+	url := "https://github.com/ViRb3/wgcf/releases/download/v2.2.27/wgcf_2.2.27_linux_amd64"
+	DownloadFromUrl(url, "wgcf")
 }
