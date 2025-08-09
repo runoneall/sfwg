@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"net"
 	"os"
@@ -100,7 +101,26 @@ func doGenWGCFProfile() {
 }
 
 func doAutoDownloadWGCF() {
-	url := "https://github.com/ViRb3/wgcf/releases/download/v2.2.27/wgcf_2.2.27_linux_amd64"
-	DownloadFromUrl(url, "wgcf")
+	jsonBytes, err := downloadAndGetContent(
+		"https://api.github.com/repos/ViRb3/wgcf/releases/latest",
+	)
+
+	if err != nil {
+		fmt.Println("不能获取 wgcf 最新版本", err)
+	}
+
+	var wgcfLatest struct {
+		TagName string `json:"tag_name"`
+	}
+
+	if err := json.Unmarshal(jsonBytes, &wgcfLatest); err != nil {
+		fmt.Println("解析 wgcf 最新版本失败", err)
+	}
+
+	downloadFromUrl(fmt.Sprintf(
+		"https://github.com/ViRb3/wgcf/releases/download/%s/wgcf_%s_linux_amd64",
+		wgcfLatest.TagName,
+		wgcfLatest.TagName[1:],
+	), "wgcf")
 	runCmd([]string{"chmod", "+x", "wgcf"})
 }

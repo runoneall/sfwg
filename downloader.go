@@ -2,12 +2,14 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"time"
 
 	"github.com/cavaliergopher/grab/v3"
 )
 
-func DownloadFromUrl(url string, saveto string) error {
+func downloadFromUrl(url string, saveto string) error {
 	client := grab.NewClient()
 	req, err := grab.NewRequest(saveto, url)
 
@@ -50,4 +52,19 @@ Loop:
 
 	fmt.Println("Download saved to", resp.Filename)
 	return nil
+}
+
+func downloadAndGetContent(url string) ([]byte, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return []byte{}, err
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	return body, nil
 }
